@@ -1,0 +1,3 @@
+[workspace]
+members = ["crates/junit-parser", "crates/ratunit"]
+resolver = "2"

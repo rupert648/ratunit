@@ -1,0 +1,10 @@
+[package]
+name = "junit-parser"
+version = "0.1.0"
+edition = "2021"
+description = "A library for parsing JUnit XML test report files"
+
+[dependencies]
+quick-xml = { version = "0.37", features = ["serde", "serialize"] }
+serde = { version = "1", features = ["derive"] }
+anyhow = "1"

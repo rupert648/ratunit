@@ -1,0 +1,12 @@
+[package]
+name = "ratunit"
+version = "0.1.0"
+edition = "2021"
+description = "A rat-powered TUI viewer for JUnit XML test reports"
+
+[dependencies]
+junit-parser = { path = "../junit-parser" }
+ratatui = "0.29"
+crossterm = "0.28"
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"

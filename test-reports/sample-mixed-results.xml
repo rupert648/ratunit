@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="24" failures="3" errors="1" skipped="4" time="12.345">
+  <testsuite name="com.example.auth.LoginServiceTest" timestamp="2026-01-15T09:30:00" time="4.210" tests="8" failures="1" errors="0" skipped="1">
+    <properties>
+      <property name="java.version" value="21.0.1"/>
+      <property name="os.name" value="Linux"/>
+      <property name="env" value="ci"/>
+    </properties>
+    <testcase classname="com.example.auth.LoginServiceTest" name="testLoginWithValidCredentials" time="0.432"/>
+    <testcase classname="com.example.auth.LoginServiceTest" name="testLoginWithInvalidPassword" time="0.215"/>
+    <testcase classname="com.example.auth.LoginServiceTest" name="testLoginWithExpiredToken" time="1.003">
+      <failure message="Expected status 401 but got 500"><![CDATA[java.lang.AssertionError: Expected status 401 but got 500
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertEquals(Assert.java:169)
+	at com.example.auth.LoginServiceTest.testLoginWithExpiredToken(LoginServiceTest.java:47)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)]]></failure>
+      <system-out><![CDATA[DEBUG: Attempting login with expired token abc123...
+WARN: Token validation failed: token expired at 2025-12-01T00:00:00Z]]></system-out>
+      <system-err><![CDATA[ERROR: Unexpected server error during token refresh
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.example.auth.TokenRefresher.refresh(TokenRefresher.java:32)]]></system-err>
+    </testcase>
+    <testcase classname="com.example.auth.LoginServiceTest" name="testLoginRateLimiting" time="0.891"/>
+    <testcase classname="com.example.auth.LoginServiceTest" name="testLoginWithMFA" time="0.654"/>
+    <testcase classname="com.example.auth.LoginServiceTest" name="testLoginWithSAML" time="0.012">
+      <skipped/>
+    </testcase>
+    <testcase classname="com.example.auth.LoginServiceTest" name="testConcurrentLogin" time="0.782"/>
+    <testcase classname="com.example.auth.LoginServiceTest" name="testLogout" time="0.221"/>
+  </testsuite>
+  <testsuite name="com.example.payment.PaymentProcessorTest" timestamp="2026-01-15T09:34:00" time="6.100" tests="10" failures="2" errors="1" skipped="2">
+    <properties>
+      <property name="stripe.api" value="test"/>
+      <property name="currency" value="USD"/>
+    </properties>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testChargeValidCard" time="1.230"/>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testChargeDeclinedCard" time="0.340"/>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testRefundFullAmount" time="0.870">
+      <failure message="Refund amount mismatch"><![CDATA[java.lang.AssertionError: Refund amount mismatch
+Expected: $99.99
+  Actual: $89.99
+	at com.example.payment.PaymentProcessorTest.testRefundFullAmount(PaymentProcessorTest.java:91)]]></failure>
+      <system-out><![CDATA[Processing refund for order #12345
+Stripe API response: { "status": "partial_refund", "amount": 8999 }]]></system-out>
+    </testcase>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testRefundPartialAmount" time="0.510"/>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testSubscriptionRenewal" time="2.100">
+      <failure message="Renewal failed: payment method expired"><![CDATA[com.example.payment.PaymentException: Renewal failed: payment method expired
+	at com.example.payment.SubscriptionManager.renew(SubscriptionManager.java:145)
+	at com.example.payment.PaymentProcessorTest.testSubscriptionRenewal(PaymentProcessorTest.java:128)]]></failure>
+    </testcase>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testWebhookSignatureVerification" time="0.120"/>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testCurrencyConversion" time="0.005">
+      <skipped/>
+    </testcase>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testCryptocurrencyPayment" time="0.003">
+      <skipped/>
+    </testcase>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testConnectionTimeout" time="0.920">
+      <error message="Connection timed out"><![CDATA[java.net.SocketTimeoutException: Connection timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:546)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:597)
+	at com.example.payment.StripeClient.connect(StripeClient.java:89)]]></error>
+      <system-err><![CDATA[FATAL: Could not reach payment gateway at api.stripe.com:443
+Retry attempts exhausted (3/3)]]></system-err>
+    </testcase>
+    <testcase classname="com.example.payment.PaymentProcessorTest" name="testIdempotencyKey" time="0.002"/>
+  </testsuite>
+  <testsuite name="com.example.api.UserEndpointTest" timestamp="2026-01-15T09:40:00" time="2.035" tests="6" failures="0" errors="0" skipped="1">
+    <testcase classname="com.example.api.UserEndpointTest" name="testGetUserById" time="0.345">
+      <system-out><![CDATA[GET /api/users/42 -> 200 OK (345ms)
+Response: {"id": 42, "name": "Alice", "role": "admin"}]]></system-out>
+    </testcase>
+    <testcase classname="com.example.api.UserEndpointTest" name="testGetUserNotFound" time="0.120">
+      <system-out><![CDATA[GET /api/users/999 -> 404 Not Found (120ms)]]></system-out>
+    </testcase>
+    <testcase classname="com.example.api.UserEndpointTest" name="testCreateUser" time="0.560">
+      <system-out><![CDATA[POST /api/users -> 201 Created (560ms)
+Response: {"id": 43, "name": "Bob", "role": "user"}]]></system-out>
+    </testcase>
+    <testcase classname="com.example.api.UserEndpointTest" name="testUpdateUser" time="0.430"/>
+    <testcase classname="com.example.api.UserEndpointTest" name="testDeleteUser" time="0.280"/>
+    <testcase classname="com.example.api.UserEndpointTest" name="testBulkImport" time="0.300">
+      <skipped/>
+    </testcase>
+  </testsuite>
+</testsuites>
