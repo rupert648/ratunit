@@ -1,6 +1,6 @@
 [package]
 name = "ratunit"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A rat-powered TUI viewer for JUnit XML test reports"
 
